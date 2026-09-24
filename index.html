@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wireframe Studio - Creador de Mockups Low-Fi</title>
+  
+  <link rel="stylesheet" href="css/wireframe-engine.css">
+  <link rel="stylesheet" href="css/app-shell.css">
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. SUBPÁGINA / VISTA DASHBOARD DE PROYECTOS (VISTA DE INICIO DE PROYECTOS)
+       ========================================================================== -->
+  <div id="projectsDashboardView" class="projects-dashboard-view">
+    <header class="projects-dashboard-topbar">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span style="font-weight:900; font-size:1rem; color:#111827;">Wireframe Studio</span>
+        <span class="studio-logo-badge">LOW-FI</span>
+      </div>
+
+      <div style="display:flex; align-items:center; gap:10px;">
+        <button class="topbar-btn" onclick="WireframeStudio.triggerImportProjectFile()" style="padding:6px 12px; font-weight:700;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+          <span>Importar Archivo (.wireframe)</span>
+        </button>
+
+        <button class="topbar-btn primary" onclick="WireframeStudio.openTemplatePickerModal()" style="padding:6px 12px; font-weight:700;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <span>Nuevo Proyecto</span>
+        </button>
+      </div>
+    </header>
+
+    <main class="projects-dashboard-container">
+      <div class="dashboard-header">
+        <h1 class="dashboard-title">Mis Proyectos</h1>
+        <p class="dashboard-subtitle">
+          Crea un nuevo proyecto desde una plantilla sugerida o abre uno de tus mockups guardados localmente.
+        </p>
+      </div>
+
+      <div class="projects-grid" id="projectsDashboardGrid">
+        <!-- El primer recuadro es la tarjeta con un + para crear proyectos nuevos -->
+        <div class="project-new-card" onclick="WireframeStudio.openTemplatePickerModal()" title="Crear un nuevo proyecto a partir de plantillas">
+          <div class="project-new-icon-box">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </div>
+          <div class="project-new-title">Crear Nuevo Proyecto</div>
+          <div class="project-new-desc">
+            Haz clic aquí para ver las sugerencias de plantilla de manera simple y minimalista.
+          </div>
+        </div>
+
+        <!-- Los proyectos ya creados se insertarán dinámicamente aquí -->
+      </div>
+
+      <!-- Zona para arrastrar e importar archivos de proyectos -->
+      <div class="dropzone-box" onclick="WireframeStudio.triggerImportProjectFile()">
+        <div style="font-size:0.85rem; font-weight:700; color:#374151;">
+          Arrastra aquí un archivo .wireframe o .json para importarlo
+        </div>
+        <div style="font-size:0.75rem; color:#6b7280; margin-top:3px;">
+          O haz clic aquí para seleccionar el archivo guardado en tu ordenador
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- ==========================================================================
+       2. VISTA EDITOR DE MOCKUPS (CON TOPBAR LIMPIA Y MINIMALISTA SEGÚN LO PEDIDO)
+       ========================================================================== -->
+  <div id="editorView" class="editor-view active">
+
+    <!-- TOPBAR: SÓLO LOGO INTERACTIVO, PUNTO VERDE, NOMBRE DE PÁGINA, EDITAR Y DESHACER -->
+    <header class="studio-topbar">
+      <div class="topbar-left">
+        <!-- Tocar el icono de la aplicación lleva a Mis Proyectos -->
+        <button class="topbar-brand-btn" id="studioLogoBtn" onclick="WireframeStudio.showProjectsView()" title="← Ir a Mis Proyectos (clic para volver al inicio)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+          <span class="topbar-brand-title">Wireframe Studio</span>
+          <span class="studio-logo-badge" title="Toca aquí para ver todos tus proyectos">PROYECTOS</span>
+        </button>
+
+        <div class="topbar-divider"></div>
+
+        <!-- Punto verde de guardado local -->
+        <span class="topbar-green-dot-wrapper" title="Guardado automáticamente en la memoria local de tu navegador">
+          <span class="live-green-dot" id="saveStatusDot"></span>
+          <span id="saveStatusText">Guardado</span>
+        </span>
+
+        <div class="topbar-divider"></div>
+
+        <!-- Nombre de la página actual + Botón de Editar -->
+        <div class="topbar-page-info">
+          <span class="topbar-page-label">Página:</span>
+          <span class="topbar-current-page-title" id="topbarCurrentPageName">Pantalla 1</span>
+          <button class="topbar-page-edit-btn" id="btnEditPageName" onclick="WireframeStudio.promptRenameCurrentPage()" title="Editar el nombre de esta pantalla">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            <span>Editar</span>
+          </button>
+        </div>
+
+        <div class="topbar-divider"></div>
+
+        <!-- Botones de Deshacer / Rehacer -->
+        <div class="undo-redo-group" style="display:flex; gap:3px;">
+          <button class="topbar-btn" id="btnUndo" onclick="WireframeStudio.undo()" title="Deshacer cambio (Ctrl+Z)" disabled style="padding: 5px 8px; opacity: 0.4; cursor: not-allowed;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/></svg>
+            <span>Deshacer</span>
+          </button>
+          <button class="topbar-btn" id="btnRedo" onclick="WireframeStudio.redo()" title="Rehacer cambio (Ctrl+Y)" disabled style="padding: 5px 8px; opacity: 0.4; cursor: not-allowed;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 7v6h-6"/><path d="M3 17a9 9 0 0 1 9-9 9 9 0 0 1 6 2.3L21 13"/></svg>
+            <span>Rehacer</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Centro: Selector de Dispositivos (Limpio y directo) -->
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="device-switcher">
+          <button class="device-btn active" data-device="desktop" onclick="WireframeStudio.setDevice('desktop')" title="Escritorio (1200px)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <span>Escritorio</span>
+          </button>
+          <button class="device-btn" data-device="laptop" onclick="WireframeStudio.setDevice('laptop')" title="Laptop (1024px)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M2 20h20"/></svg>
+            <span>Laptop</span>
+          </button>
+          <button class="device-btn" data-device="tablet" onclick="WireframeStudio.setDevice('tablet')" title="Tablet (768px)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="2" width="16" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            <span>Tablet</span>
+          </button>
+          <button class="device-btn" data-device="mobile" onclick="WireframeStudio.setDevice('mobile')" title="Móvil (390px)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            <span>Móvil</span>
+          </button>
+          <button class="device-btn btn-multi-sync" data-device="multi" onclick="WireframeStudio.setDevice('multi')" title="3 pantallas simultáneas">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>
+            <span>Multi 3-en-1</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Derecha: Previsualizar y Exportar Menú Desplegable -->
+      <div class="topbar-right">
+        <!-- Botón Previsualizar Animado -->
+        <button class="topbar-btn preview-btn" onclick="WireframeStudio.openPrototypePreview()" title="Previsualizar prototipo animado e interactivo con navegación entre páginas">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>Previsualizar</span>
+        </button>
+
+        <div class="topbar-divider"></div>
+
+        <!-- Menú Exportar Desplegable -->
+        <div class="export-dropdown-wrapper">
+          <button class="topbar-btn" id="btnExportMenu" onclick="WireframeStudio.toggleExportMenu()" style="display:flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            <span>Exportar</span>
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+
+          <div class="export-menu-popover" id="exportMenuPopover">
+            <!-- 1. Exportar Proyecto Completo -->
+            <button class="export-menu-item" onclick="WireframeStudio.exportActiveProjectFile(); WireframeStudio.toggleExportMenu(false);">
+              <div class="export-menu-item-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+              </div>
+              <div>
+                <div class="export-menu-item-title">Exportar Proyecto Completo (.wireframe)</div>
+                <div class="export-menu-item-desc">Descarga un archivo con todas las pantallas y enlaces para guardarlo o transferirlo.</div>
+              </div>
+            </button>
+
+            <!-- 2. Importar Proyecto -->
+            <button class="export-menu-item" onclick="WireframeStudio.triggerImportProjectFile(); WireframeStudio.toggleExportMenu(false);">
+              <div class="export-menu-item-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              </div>
+              <div>
+                <div class="export-menu-item-title">Importar Archivo (.wireframe / .json)</div>
+                <div class="export-menu-item-desc">Abre un proyecto desde tu ordenador y lo guarda automáticamente en tu navegador.</div>
+              </div>
+            </button>
+
+            <div class="export-menu-divider"></div>
+
+            <!-- 3. PDF Interactivo con enlaces -->
+            <button class="export-menu-item" onclick="WireframeExporter.exportInteractivePDF(); WireframeStudio.toggleExportMenu(false);">
+              <div class="export-menu-item-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              </div>
+              <div>
+                <div class="export-menu-item-title">PDF Interactivo con Enlaces</div>
+                <div class="export-menu-item-desc">Documento PDF con saltos clicables reales entre pantallas de tu mockup.</div>
+              </div>
+            </button>
+
+            <!-- 4. Prototipo Web HTML Animado -->
+            <button class="export-menu-item" onclick="WireframeExporter.exportAnimatedHTML(); WireframeStudio.toggleExportMenu(false);">
+              <div class="export-menu-item-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+              </div>
+              <div>
+                <div class="export-menu-item-title">Prototipo Web HTML Animado</div>
+                <div class="export-menu-item-desc">Archivo HTML autónomo interactivo con animaciones de transición.</div>
+              </div>
+            </button>
+
+            <!-- 5. PNG -->
+            <button class="export-menu-item" onclick="WireframeExporter.exportPNG('wireframeCanvas', WireframeStudio.activePageId + '.png'); WireframeStudio.toggleExportMenu(false);">
+              <div class="export-menu-item-icon">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              </div>
+              <div>
+                <div class="export-menu-item-title">Imagen PNG (Pantalla Actual)</div>
+                <div class="export-menu-item-desc">Captura nítida en resolución 2x.</div>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- CUERPO PRINCIPAL DEL EDITOR -->
+    <div class="studio-body">
+
+      <!-- BARRA LATERAL IZQUIERDA: PÁGINAS & COMPONENTES -->
+      <aside class="studio-sidebar-left">
+        <div class="sidebar-tabs">
+          <button class="sidebar-tab-btn active" id="sidebarTabPages" data-tab="pages" onclick="WireframeStudio.switchSidebarTab('pages')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            <span id="sidebarPagesTabTitle">Pantallas</span>
+          </button>
+          <button class="sidebar-tab-btn" id="sidebarTabComponents" data-tab="components" onclick="WireframeStudio.switchSidebarTab('components')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="3" x2="21" y2="21"/><line x1="21" y1="3" x2="3" y2="21"/></svg>
+            <span>Componentes</span>
+          </button>
+        </div>
+
+        <!-- Pestaña 1: Pantallas del Proyecto -->
+        <div id="pagesTabContent" class="sidebar-scroll-content">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 8px;">
+            <div class="sidebar-section-title" style="margin-bottom:0;">Pantallas de este proyecto</div>
+            <!-- Botón limpio para añadir página con un solo clic -->
+            <button class="topbar-btn primary" onclick="WireframeStudio.createNewPageDirect()" title="Crear nueva pantalla con un solo clic" style="padding: 3px 8px; font-size: 0.72rem; font-weight:700;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <span>Nueva Pantalla</span>
+            </button>
+          </div>
+          <div id="pagesList"></div>
+        </div>
+
+        <!-- Pestaña 2: Biblioteca de Componentes Arrastrables -->
+        <div id="componentsTabContent" class="sidebar-scroll-content" style="display: none;">
+          <div style="font-size: 0.72rem; color: #6b7280; margin-bottom: 8px; background: #f3f4f6; padding: 6px 8px; border-radius: 3px;">
+            Arrastra o haz clic en cualquier elemento para añadirlo al lienzo.
+          </div>
+          <div id="componentsList"></div>
+        </div>
+      </aside>
+
+      <!-- LIENZO CENTRAL -->
+      <main class="studio-canvas-stage">
+        <div id="singleCanvasArea" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+          <div class="canvas-device-wrapper preview-desktop" id="canvasDeviceWrapper" style="width: 1200px;">
+            <!-- Lienzo Wireframe Real -->
+            <div class="wf-canvas-content" id="wireframeCanvas"></div>
+
+            <!-- Tirador para redimensionar arrastrando -->
+            <div class="canvas-resize-handle" id="canvasResizeHandle" title="Arrastra para redimensionar en tiempo real"></div>
+          </div>
+        </div>
+
+        <!-- Vista Multiplataforma (3 en 1) Sincronizada -->
+        <div class="multi-platform-container" id="multiPlatformContainer"></div>
+      </main>
+
+      <!-- PANEL LATERAL DERECHO (INSPECTOR DE PROPIEDADES) -->
+      <aside class="studio-sidebar-right">
+        <div class="inspector-header">
+          <span id="inspectorTitle">Propiedades</span>
+        </div>
+        <div class="inspector-content" id="inspectorContent">
+          <div style="color: #6b7280; font-size: 0.78rem; text-align: center; margin-top: 30px;">
+            Selecciona un elemento en el lienzo para ajustar su alineación, enlace a otra pantalla o tamaño.
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       MODAL: SUGERENCIAS DE PLANTILLA PARA CREAR NUEVO PROYECTO
+       ========================================================================== -->
+  <div class="template-picker-overlay" id="templatePickerModal" onclick="if(event.target === this) WireframeStudio.closeTemplatePickerModal();">
+    <div class="template-picker-card">
+      <div class="template-picker-header">
+        <div>
+          <h3 style="font-size:1.08rem; font-weight:900; color:#111827;">Crear Nuevo Proyecto</h3>
+          <p style="font-size:0.75rem; color:#6b7280; margin-top:2px;">
+            Elige una plantilla sugerida de manera simple y minimalista o empieza desde un lienzo en blanco.
+          </p>
+        </div>
+        <button class="topbar-btn" onclick="WireframeStudio.closeTemplatePickerModal()" style="padding:4px 8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <div class="template-picker-body">
+        <div style="margin-bottom:14px;">
+          <label for="newProjectTitleInput" style="display:block; font-size:0.76rem; font-weight:800; color:#374151; margin-bottom:5px; text-transform:uppercase;">
+            Nombre del Proyecto:
+          </label>
+          <input type="text" id="newProjectTitleInput" class="wf-input" value="Mi Nuevo Proyecto" placeholder="Ej: Mi Tienda Online, Mi HUD de Juego..." style="width:100%; padding:8px 12px; font-size:0.9rem; border:1.5px solid #d1d5db; border-radius:4px; font-weight:600;" />
+        </div>
+
+        <div style="font-size:0.76rem; font-weight:800; color:#374151; margin-top:16px; margin-bottom:8px; text-transform:uppercase;">
+          Sugerencias de Plantilla:
+        </div>
+
+        <div class="template-grid" id="templateSuggestionsGrid">
+          <!-- Poblado dinámicamente desde WireframeStorage.TEMPLATE_SUGGESTIONS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input oculto para importar archivos de proyecto -->
+  <input type="file" id="hiddenProjectFileInput" accept=".wireframe,.json,application/json" style="display: none;" onchange="WireframeStudio.handleProjectFileSelect(event)" />
+
+  <!-- ==========================================================================
+       MODAL PREVISUALIZADOR DE PROTOTIPO ANIMADO E INTERACTIVO
+       ========================================================================== -->
+  <div class="preview-modal-overlay" id="prototypePreviewModal">
+    <div class="preview-modal-topbar">
+      <div style="display: flex; align-items: center; gap: 14px;">
+        <div style="font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; gap: 6px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+          <span>Previsualización Interactiva</span>
+        </div>
+        <div class="topbar-divider" style="background:#4b5563;"></div>
+        <div style="display: flex; align-items: center; gap: 8px; font-size: 0.8rem;">
+          <span style="color: #9ca3af;">Pantalla actual:</span>
+          <select id="previewPageSelect" onchange="WireframeStudio.previewNavigateToPage(this.value)" style="background:#374151; color:#fff; border:1px solid #4b5563; padding:4px 10px; border-radius:3px; font-weight:700;">
+          </select>
+        </div>
+        <span style="font-size:0.75rem; color:#93c5fd; background:#1e3a8a; padding:2px 8px; border-radius:3px;">
+          Haz clic en cualquier botón o elemento enlazado para navegar con animación
+        </span>
+      </div>
+
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <div class="device-switcher" style="background: #374151; border-color: #4b5563;">
+          <button class="device-btn active" data-prevdevice="desktop" onclick="WireframeStudio.setPreviewDevice('desktop')" style="color:#e5e7eb;">Escritorio</button>
+          <button class="device-btn" data-prevdevice="tablet" onclick="WireframeStudio.setPreviewDevice('tablet')" style="color:#e5e7eb;">Tablet</button>
+          <button class="device-btn" data-prevdevice="mobile" onclick="WireframeStudio.setPreviewDevice('mobile')" style="color:#e5e7eb;">Móvil</button>
+        </div>
+
+        <button class="topbar-btn" onclick="WireframeExporter.exportInteractivePDF()" title="Descargar PDF con enlaces internos" style="background:#2563eb; color:#fff; border-color:#2563eb;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          <span>Exportar PDF</span>
+        </button>
+
+        <button class="topbar-btn" onclick="WireframeStudio.closePrototypePreview()" style="background:#374151; color:#fff; border-color:#4b5563;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          <span>Cerrar (Esc)</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="preview-modal-stage" onclick="if(event.target === this) WireframeStudio.closePrototypePreview();">
+      <div class="preview-viewport-card" id="previewViewportCard" style="width: 1100px;">
+        <div id="previewCardContent" class="wf-canvas-content"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notificación Toast -->
+  <div class="studio-toast" id="studioToast">
+    <span id="toastText">Operación completada</span>
+  </div>
+
+  <!-- Scripts -->
+  <script src="vendor/jspdf.umd.min.js"></script>
+  <script src="vendor/html2canvas.min.js"></script>
+  <script src="vendor/Sortable.min.js"></script>
+  <script src="js/icons.js"></script>
+  <script src="js/components.js"></script>
+  <script src="js/templates.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/exporter.js"></script>
+  <script src="js/app.js"></script>
+
+</body>
+</html>

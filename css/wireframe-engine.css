@@ -1,0 +1,922 @@
+/* ==========================================================================
+   WIREFRAME ENGINE CSS
+   Static flat colors only (NO GRADIENTS).
+   Crisp low-fidelity architectural wireframe aesthetic.
+   ========================================================================== */
+
+:root {
+  --wf-border-color: #111111;
+  --wf-border-width: 2px;
+  --wf-border-radius: 0px;
+  --wf-bg-card: #ffffff;
+  --wf-bg-muted: #e5e7eb;
+  --wf-bg-subtle: #f4f5f7;
+  --wf-text-color: #111111;
+  --wf-text-muted: #555555;
+  --wf-line-color: #777777;
+  --wf-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --wf-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+}
+
+/* Theme: Sketchy (Hand-drawn Miro style, static colors) */
+.theme-sketchy {
+  --wf-font-family: "Architects Daughter", "Comic Neue", "Chalkboard SE", "Comic Sans MS", cursive, sans-serif;
+  --wf-border-radius: 2px;
+}
+.theme-sketchy .wf-box,
+.theme-sketchy .wf-panel,
+.theme-sketchy .wf-card,
+.theme-sketchy .wf-btn,
+.theme-sketchy .wf-input {
+  border-radius: 3px 2px 4px 2px;
+}
+
+/* Wireframe Root Document Inside Preview */
+.wf-canvas-content {
+  font-family: var(--wf-font-family);
+  color: var(--wf-text-color);
+  line-height: 1.4;
+  background-color: #ffffff;
+  width: 100%;
+  min-height: 100%;
+  box-sizing: border-box;
+  padding: 24px;
+  position: relative;
+}
+
+/* Base Wireframe Boxes */
+.wf-box {
+  border: var(--wf-border-width) solid var(--wf-border-color);
+  background-color: var(--wf-bg-card);
+  position: relative;
+  box-sizing: border-box;
+}
+
+.wf-panel {
+  border: var(--wf-border-width) solid var(--wf-border-color);
+  background-color: var(--wf-bg-muted);
+  padding: 16px;
+  margin-bottom: 18px;
+  position: relative;
+  box-sizing: border-box;
+}
+
+.wf-panel.wf-panel-subtle {
+  background-color: var(--wf-bg-subtle);
+}
+
+.wf-panel-header {
+  font-size: 1.15rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--wf-text-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* ==========================================================================
+   IMAGE / VIDEO 'X' PLACEHOLDER
+   ========================================================================== */
+.wf-placeholder-x {
+  border: var(--wf-border-width) solid var(--wf-border-color);
+  background-color: #ffffff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  min-height: 80px;
+  user-select: none;
+}
+
+.wf-placeholder-x svg.wf-x-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.wf-placeholder-x svg.wf-x-lines line {
+  stroke: var(--wf-border-color);
+  stroke-width: 1.5px;
+}
+
+.wf-placeholder-x .wf-x-label {
+  position: relative;
+  z-index: 2;
+  background-color: #ffffff;
+  padding: 3px 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--wf-text-color);
+  border: 1px solid var(--wf-border-color);
+  text-align: center;
+  max-width: 85%;
+  word-break: break-word;
+}
+
+/* Circle Placeholder */
+.wf-placeholder-circle {
+  border: var(--wf-border-width) solid var(--wf-border-color);
+  border-radius: 50% !important;
+  background-color: #ffffff;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.wf-placeholder-circle svg.wf-x-lines line {
+  stroke: var(--wf-border-color);
+  stroke-width: 1.5px;
+}
+
+/* ==========================================================================
+   TEXT LINES (PARALLEL GRAY BARS)
+   ========================================================================== */
+.wf-text-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.wf-text-line {
+  height: 3px;
+  background-color: var(--wf-line-color);
+}
+
+.wf-text-line.thin { height: 2px; }
+.wf-text-line.thick { height: 6px; }
+
+.wf-text-line.w-100 { width: 100%; }
+.wf-text-line.w-90 { width: 90%; }
+.wf-text-line.w-80 { width: 80%; }
+.wf-text-line.w-70 { width: 70%; }
+.wf-text-line.w-60 { width: 60%; }
+.wf-text-line.w-50 { width: 50%; }
+.wf-text-line.w-40 { width: 40%; }
+.wf-text-line.w-30 { width: 30%; }
+
+/* ==========================================================================
+   BUTTONS & INPUTS (STATIC SOLID COLORS)
+   ========================================================================== */
+.wf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: var(--wf-border-width) solid var(--wf-border-color);
+  background-color: var(--wf-bg-card);
+  color: var(--wf-text-color);
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 6px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.wf-btn:hover {
+  background-color: var(--wf-bg-muted);
+}
+
+.wf-btn-primary {
+  background-color: var(--wf-border-color);
+  color: #ffffff;
+}
+
+.wf-btn-primary:hover {
+  background-color: #333333;
+}
+
+.wf-btn-sm {
+  padding: 3px 8px;
+  font-size: 0.78rem;
+}
+
+.wf-btn-block {
+  width: 100%;
+}
+
+.wf-input {
+  border: var(--wf-border-width) solid var(--wf-border-color);
+  background-color: #ffffff;
+  color: var(--wf-text-color);
+  font-family: inherit;
+  font-size: 0.9rem;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  width: 100%;
+  outline: none;
+}
+
+.wf-search-group {
+  display: flex;
+  align-items: stretch;
+  width: 100%;
+}
+
+.wf-search-group .wf-input {
+  border-right: none;
+}
+
+.wf-search-group .wf-btn {
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   RESPONSIVE AUTO-ADAPTIVE CONTAINERS
+   ========================================================================== */
+.wf-container {
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto;
+  min-height: 200px;
+}
+
+.wf-row-split {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+  align-items: stretch;
+}
+
+.wf-col-main {
+  flex: 7;
+  min-width: 0;
+}
+
+.wf-col-side {
+  flex: 3;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.wf-grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  min-height: 60px;
+}
+
+.wf-grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  min-height: 60px;
+}
+
+.wf-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  min-height: 60px;
+}
+
+.wf-flex-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+
+.wf-flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.wf-flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* ==========================================================================
+   SPECIFIC WIREFRAME ARTIFACTS
+   ========================================================================== */
+
+/* 1. YouTube Wireframe (Image 1) */
+.wf-yt-header {
+  border-bottom: 2px solid var(--wf-border-color);
+  padding-bottom: 12px;
+  margin-bottom: 18px;
+}
+
+.wf-yt-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.wf-yt-logo-block {
+  display: flex;
+  flex-direction: column;
+}
+
+.wf-yt-logo {
+  font-size: 1.9rem;
+  font-weight: 900;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.wf-yt-logo span.yt-box {
+  background-color: #111111;
+  color: #ffffff;
+  padding: 1px 6px;
+  margin-left: 2px;
+}
+
+.wf-yt-logo-slogan {
+  font-size: 0.8rem;
+  color: var(--wf-text-muted);
+  font-weight: 500;
+  margin-top: 3px;
+}
+
+.wf-yt-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.95rem;
+  font-weight: 700;
+}
+
+.wf-yt-nav-links a {
+  color: var(--wf-text-color);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.wf-yt-pipe {
+  color: var(--wf-text-muted);
+  font-weight: 300;
+}
+
+.wf-yt-account-links {
+  font-size: 0.85rem;
+  display: flex;
+  gap: 12px;
+  color: #111111;
+}
+
+.wf-yt-account-links a {
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.wf-featured-layout {
+  display: flex;
+  gap: 16px;
+}
+
+.wf-featured-main {
+  flex: 5;
+}
+
+.wf-featured-main .wf-placeholder-x {
+  height: 280px;
+}
+
+.wf-featured-playlist {
+  flex: 4;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.wf-playlist-item {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.wf-playlist-thumb {
+  width: 90px;
+  height: 65px;
+  flex-shrink: 0;
+}
+
+.wf-playlist-info {
+  flex: 1;
+  padding-top: 2px;
+}
+
+.wf-video-card-horiz {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+
+.wf-video-card-horiz .wf-video-thumb {
+  width: 100px;
+  height: 75px;
+  flex-shrink: 0;
+}
+
+.wf-video-card-horiz .wf-video-meta {
+  flex: 1;
+  padding-top: 4px;
+}
+
+.wf-ad-box {
+  border: var(--wf-border-width) solid var(--wf-border-color);
+  background-color: var(--wf-bg-card);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 220px;
+  text-align: center;
+  padding: 16px;
+  font-weight: 700;
+}
+
+/* 2. E-commerce (Image 2) */
+.wf-product-card {
+  border: var(--wf-border-width) solid var(--wf-border-color);
+  background-color: var(--wf-bg-card);
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-sizing: border-box;
+}
+
+.wf-product-img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.wf-product-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.wf-product-price {
+  font-size: 0.95rem;
+  font-weight: 800;
+}
+
+.wf-product-price-old {
+  font-size: 0.8rem;
+  text-decoration: line-through;
+  color: var(--wf-text-muted);
+  margin-left: 6px;
+  font-weight: 400;
+}
+
+.wf-rating-stars {
+  font-size: 0.8rem;
+  color: var(--wf-text-color);
+  display: flex;
+  gap: 2px;
+}
+
+.wf-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border: 1.5px solid var(--wf-border-color);
+  background: var(--wf-bg-card);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.wf-chip.active {
+  background: var(--wf-border-color);
+  color: #ffffff;
+}
+
+.wf-tracking-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: relative;
+  padding-left: 28px;
+}
+
+.wf-tracking-stepper::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  bottom: 10px;
+  left: 9px;
+  width: 2px;
+  background-color: var(--wf-border-color);
+}
+
+.wf-tracking-step {
+  position: relative;
+}
+
+.wf-step-node {
+  position: absolute;
+  left: -28px;
+  top: 2px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--wf-border-color);
+  background-color: #ffffff;
+}
+
+.wf-step-node.completed {
+  background-color: var(--wf-border-color);
+}
+
+/* 3. TCG Cards */
+.wf-tcg-card {
+  border: 2.5px solid var(--wf-border-color);
+  background-color: #ffffff;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-width: 240px;
+  margin: 0 auto;
+  box-sizing: border-box;
+}
+
+.wf-tcg-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1.5px solid var(--wf-border-color);
+  padding-bottom: 4px;
+}
+
+.wf-tcg-name {
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.wf-tcg-cost {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--wf-border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  background: var(--wf-bg-muted);
+}
+
+.wf-tcg-art {
+  width: 100%;
+  height: 120px;
+}
+
+.wf-tcg-type {
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-top: 1px solid var(--wf-border-color);
+  border-bottom: 1px solid var(--wf-border-color);
+  padding: 2px 4px;
+  background: var(--wf-bg-subtle);
+  display: flex;
+  justify-content: space-between;
+}
+
+.wf-tcg-text-box {
+  border: 1px solid var(--wf-border-color);
+  padding: 6px;
+  min-height: 50px;
+  background: #ffffff;
+  font-size: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wf-tcg-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.wf-tcg-stats {
+  border: 1.5px solid var(--wf-border-color);
+  padding: 2px 8px;
+  font-weight: 900;
+  font-size: 0.85rem;
+  background: var(--wf-bg-muted);
+}
+
+/* 4. Gaming UI */
+.wf-game-hud-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: var(--wf-border-width) solid var(--wf-border-color);
+  padding: 10px 14px;
+  background: var(--wf-bg-card);
+}
+
+.wf-hud-meter {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.wf-meter-label {
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.wf-meter-track {
+  height: 14px;
+  border: 1.5px solid var(--wf-border-color);
+  background: #ffffff;
+  position: relative;
+  overflow: hidden;
+}
+
+.wf-meter-fill-hp {
+  height: 100%;
+  width: 75%;
+  background: #111111;
+}
+
+.wf-meter-fill-mp {
+  height: 100%;
+  width: 50%;
+  background: #777777;
+}
+
+.wf-inventory-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 6px;
+}
+
+.wf-inventory-slot {
+  aspect-ratio: 1 / 1;
+  border: 1.5px solid var(--wf-border-color);
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  position: relative;
+}
+
+.wf-slot-key {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  font-size: 0.65rem;
+  color: var(--wf-text-muted);
+}
+
+.wf-hero-section {
+  text-align: center;
+  padding: 24px 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+
+/* ==========================================================================
+   BREAKPOINTS (AUTO ADAPTATION)
+   ========================================================================== */
+.preview-tablet .wf-row-split {
+  flex-direction: column;
+}
+.preview-tablet .wf-featured-layout {
+  flex-direction: column;
+}
+.preview-tablet .wf-featured-main .wf-placeholder-x {
+  height: 220px;
+}
+.preview-tablet .wf-grid-4 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+.preview-mobile .wf-row-split,
+.preview-mobile .wf-featured-layout,
+.preview-mobile .wf-yt-header-top {
+  flex-direction: column;
+  align-items: stretch;
+}
+.preview-mobile .wf-featured-main .wf-placeholder-x {
+  height: 180px;
+}
+.preview-mobile .wf-grid-4,
+.preview-mobile .wf-grid-3,
+.preview-mobile .wf-grid-2 {
+  grid-template-columns: 1fr !important;
+}
+.preview-mobile .wf-playlist-item,
+.preview-mobile .wf-video-card-horiz {
+  flex-direction: column;
+}
+.preview-mobile .wf-video-card-horiz .wf-video-thumb,
+.preview-mobile .wf-playlist-thumb {
+  width: 100%;
+  height: 130px;
+}
+
+.wf-mobile-bottom-nav {
+  display: none;
+  border-top: 2px solid var(--wf-border-color);
+  background: #ffffff;
+  padding: 8px 12px;
+  justify-content: space-around;
+  margin-top: 24px;
+}
+.preview-mobile .wf-mobile-bottom-nav {
+  display: flex;
+}
+.wf-bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+/* ==========================================================================
+   INTERACTIVE RESIZE HANDLES & FLOATING POSITION TOOLBAR
+   ========================================================================== */
+.wf-draggable-block {
+  position: relative;
+  cursor: grab;
+  transition: box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+
+.wf-draggable-block:hover {
+  outline: 1px dashed #94a3b8;
+  outline-offset: 2px;
+}
+
+.wf-element-selected {
+  outline: 2px solid #2563eb !important;
+  outline-offset: 2px;
+  position: relative !important;
+}
+
+/* Floating Contextual Alignment & Position Toolbar */
+.wf-floating-toolbar {
+  position: absolute;
+  top: -42px;
+  left: 0;
+  display: flex;
+  align-items: center;
+  background-color: #111827;
+  color: #ffffff;
+  border-radius: 4px;
+  padding: 3px 6px;
+  gap: 3px;
+  z-index: 500;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+  user-select: none;
+  pointer-events: auto;
+  white-space: nowrap;
+}
+
+.wf-toolbar-btn {
+  background: transparent;
+  border: none;
+  color: #e5e7eb;
+  padding: 4px 6px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+  transition: background-color 0.1s ease;
+}
+
+.wf-toolbar-btn:hover {
+  background-color: #374151;
+  color: #ffffff;
+}
+
+.wf-toolbar-btn.active {
+  background-color: #2563eb;
+  color: #ffffff;
+}
+
+.wf-toolbar-sep {
+  width: 1px;
+  height: 16px;
+  background-color: #374151;
+  margin: 0 3px;
+}
+
+/* Interactive Resize Handles */
+.wf-resize-handle {
+  position: absolute;
+  background-color: #2563eb;
+  border: 1.5px solid #ffffff;
+  z-index: 450;
+  box-sizing: border-box;
+}
+
+/* Right handle (Width) */
+.wf-resize-handle-e {
+  top: 50%;
+  right: -6px;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 28px;
+  border-radius: 3px;
+  cursor: ew-resize;
+}
+
+/* Bottom handle (Height) */
+.wf-resize-handle-s {
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 28px;
+  height: 8px;
+  border-radius: 3px;
+  cursor: ns-resize;
+}
+
+/* Corner handle (Both) */
+.wf-resize-handle-se {
+  bottom: -6px;
+  right: -6px;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  cursor: nwse-resize;
+}
+
+/* 50/50 Column Split Container */
+.wf-row-50-50 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  width: 100%;
+  margin-bottom: 18px;
+  box-sizing: border-box;
+  align-items: stretch;
+}
+
+@media (max-width: 768px) {
+  .wf-row-50-50 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* SortableJS Ghost & Chosen states */
+.wf-sortable-ghost {
+  opacity: 0.25 !important;
+  outline: 2px dashed #2563eb !important;
+  background-color: #eff6ff !important;
+}
+
+.wf-sortable-chosen {
+  outline: 2px solid #2563eb !important;
+  cursor: grabbing !important;
+}
+
+.wf-sortable-drag {
+  opacity: 0.95 !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+  cursor: grabbing !important;
+}
+
+.wf-editable-text {
+  cursor: text;
+  outline: none;
+}
+.wf-editable-text:hover {
+  background-color: #eff6ff;
+}
+.wf-editable-text:focus {
+  background-color: #dbeafe;
+}
