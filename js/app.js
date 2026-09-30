@@ -1168,7 +1168,7 @@ const WireframeStudio = {
   },
 
   // ==========================================================================
-  // POSITION ALIGNMENT & 50/50 SPLITTING
+  // POSITION ALIGNMENT, ITEM INSERTION & 50/50 SPLITTING
   // ==========================================================================
   alignElement(alignType) {
     const el = this.state.selectedElement;
@@ -1181,22 +1181,92 @@ const WireframeStudio = {
       el.style.marginRight = 'auto';
       el.style.alignSelf = 'flex-start';
       el.style.textAlign = 'left';
+      if (el.style.display === 'flex' || el.classList.contains('wf-flex-row') || el.classList.contains('wf-flex-between') || el.classList.contains('wf-sort-zone')) {
+        el.style.justifyContent = 'flex-start';
+      }
     } else if (alignType === 'center') {
       el.style.marginLeft = 'auto';
       el.style.marginRight = 'auto';
       el.style.alignSelf = 'center';
       el.style.textAlign = 'center';
+      if (el.style.display === 'flex' || el.classList.contains('wf-flex-row') || el.classList.contains('wf-flex-between') || el.classList.contains('wf-sort-zone')) {
+        el.style.justifyContent = 'center';
+      }
     } else if (alignType === 'right') {
       el.style.marginLeft = 'auto';
       el.style.marginRight = '0px';
       el.style.alignSelf = 'flex-end';
       el.style.textAlign = 'right';
+      if (el.style.display === 'flex' || el.classList.contains('wf-flex-row') || el.classList.contains('wf-flex-between') || el.classList.contains('wf-sort-zone')) {
+        el.style.justifyContent = 'flex-end';
+      }
     }
+
+    // Apply text-alignment to child editable texts if any
+    const textChildren = el.querySelectorAll('.wf-editable-text, h1, h2, h3, h4, h5, h6, p, label, .wf-x-label');
+    textChildren.forEach(t => {
+      t.style.textAlign = alignType;
+    });
 
     this.saveCurrentPageContent();
     this.autoSave();
     this.syncMultiPlatformIfActive();
     this.showToast(`Alineado: ${alignType.toUpperCase()}`);
+  },
+
+  insertChildOrSibling(itemType) {
+    const el = this.state.selectedElement;
+    if (!el) return;
+
+    this.recordSnapshot();
+    let html = '';
+    switch (itemType) {
+      case 'text':
+        html = `<p class="wf-draggable-block wf-editable-text" contenteditable="true" spellcheck="false" style="font-size:0.9rem; margin:6px 0; color:#374151;">Nuevo texto editable...</p>`;
+        break;
+      case 'heading':
+        html = `<h3 class="wf-draggable-block wf-editable-text" contenteditable="true" spellcheck="false" style="font-size:1.15rem; font-weight:800; margin:6px 0;">Nuevo Encabezado</h3>`;
+        break;
+      case 'button':
+        html = `<button class="wf-draggable-block wf-btn wf-editable-text" contenteditable="true" spellcheck="false" style="margin:4px 0;">Nuevo Botón</button>`;
+        break;
+      case 'chip':
+        html = `<span class="wf-draggable-block wf-chip wf-editable-text" contenteditable="true" spellcheck="false" style="margin:2px 4px;">Etiqueta</span>`;
+        break;
+      case 'input':
+        html = `<div class="wf-draggable-block" style="margin:6px 0; width:100%;"><input type="text" class="wf-input" placeholder="Nuevo campo..." style="width:100%;" /></div>`;
+        break;
+      case 'image':
+        html = `<div class="wf-draggable-block" style="margin:8px 0; width:100%;">${WireframeComponents.renderPlaceholderX('Nueva Imagen', 110)}</div>`;
+        break;
+      case 'row-50':
+        html = WireframeComponents.library['row-50-50'].render();
+        break;
+      default:
+        html = `<div class="wf-draggable-block wf-box" style="padding:10px;"><p class="wf-editable-text" contenteditable="true" spellcheck="false">Nuevo Bloque</p></div>`;
+    }
+
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = html.trim();
+    const newEl = tempDiv.firstElementChild;
+
+    const targetZone = el.querySelector('.wf-sort-zone, .wf-panel-body') || (el.classList.contains('wf-sort-zone') || el.classList.contains('wf-panel') || el.classList.contains('wf-box') ? el : null);
+    if (targetZone && targetZone !== newEl) {
+      targetZone.appendChild(newEl);
+    } else if (el.parentElement) {
+      el.parentElement.insertBefore(newEl, el.nextSibling);
+    } else {
+      const mainContainer = this.dom.canvasContent.querySelector('.wf-container') || this.dom.canvasContent;
+      mainContainer.appendChild(newEl);
+    }
+
+    this.bindCanvasInteractions(this.dom.canvasContent);
+    this.initSortables();
+    this.selectElement(newEl);
+    this.saveCurrentPageContent();
+    this.autoSave();
+    this.syncMultiPlatformIfActive();
+    this.showToast('Elemento añadido');
   },
 
   split5050() {
@@ -1326,6 +1396,16 @@ const WireframeStudio = {
 
       <div class="wf-toolbar-sep"></div>
 
+      <!-- Añadir Elemento Rápido -->
+      <button class="wf-toolbar-btn" onclick="WireframeStudio.insertChildOrSibling('button')" title="Añadir Botón">
+        + Botón
+      </button>
+      <button class="wf-toolbar-btn" onclick="WireframeStudio.insertChildOrSibling('text')" title="Añadir Texto">
+        + Texto
+      </button>
+
+      <div class="wf-toolbar-sep"></div>
+
       <!-- 50/50 Split -->
       <button class="wf-toolbar-btn" onclick="WireframeStudio.split5050()" title="Dividir en 2 columnas 50/50">
         ${Icons.split2(13)} <span>50/50</span>
@@ -1373,7 +1453,6 @@ const WireframeStudio = {
 
     el.appendChild(toolbar);
 
-    // Only attach interactive resize handles for resizable blocks and images
     const isResizable = el.classList.contains('wf-placeholder-x') ||
                         el.classList.contains('wf-draggable-block') ||
                         el.classList.contains('wf-box') ||
@@ -1475,12 +1554,14 @@ const WireframeStudio = {
       '.wf-editable-text', '.wf-x-label',
       '.wf-chip', '.wf-badge', '.wf-price-tag', '.wf-stat-badge',
       'label', 'span.wf-tag', 'span.wf-nav-link',
-      'th', 'td'
+      'th', 'td', 'span'
     ].join(', ');
 
     container.querySelectorAll(textSelectors).forEach(textEl => {
       if (textEl.closest('.wf-floating-toolbar') || textEl.closest('.wf-resize-handle')) return;
+      if (textEl.classList.contains('wf-resize-handle') || textEl.classList.contains('wf-step-line')) return;
 
+      // Ensure text is directly editable
       textEl.setAttribute('contenteditable', 'true');
       textEl.setAttribute('spellcheck', 'false');
 
@@ -1517,11 +1598,11 @@ const WireframeStudio = {
       let part = e.target.closest(
         'button, .wf-btn, ' +
         'h1, h2, h3, h4, h5, h6, ' +
-        'p, a, ' +
-        '.wf-placeholder-x, .wf-x-label, ' +
-        '.wf-placeholder-circle, ' +
+        'p, a, span, label, ' +
+        '.wf-x-label, .wf-placeholder-circle, ' +
         '.wf-chip, .wf-badge, .wf-price-tag, .wf-stat-badge, ' +
         'input, select, textarea, ' +
+        '.wf-placeholder-x, ' +
         '.wf-product-card, .wf-video-card-horiz, .wf-inventory-slot, .wf-playlist-item, ' +
         '.wf-tcg-card, .wf-chat-msg, ' +
         '.wf-draggable-block, .wf-box, .wf-panel'
@@ -1644,6 +1725,19 @@ const WireframeStudio = {
           <span style="font-size:0.65rem; color:#6b7280;">Edición en vivo</span>
         </label>
         <textarea id="inspTextInput" class="inspector-textarea" rows="2" placeholder="Escribe el texto de esta parte...">${currentText}</textarea>
+      </div>
+
+      <!-- AÑADIR ELEMENTOS RÁPIDOS DENTRO O AL LADO -->
+      <div class="inspector-group">
+        <label class="inspector-label">Añadir Elementos</label>
+        <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:4px;">
+          <button class="inspector-btn" onclick="WireframeStudio.insertChildOrSibling('text')">+ Texto</button>
+          <button class="inspector-btn" onclick="WireframeStudio.insertChildOrSibling('button')">+ Botón</button>
+          <button class="inspector-btn" onclick="WireframeStudio.insertChildOrSibling('chip')">+ Chip</button>
+          <button class="inspector-btn" onclick="WireframeStudio.insertChildOrSibling('image')">+ Imagen</button>
+          <button class="inspector-btn" onclick="WireframeStudio.insertChildOrSibling('input')">+ Campo</button>
+          <button class="inspector-btn" onclick="WireframeStudio.insertChildOrSibling('row-50')">+ 50/50</button>
+        </div>
       </div>
 
       <!-- TIPOGRAFÍA Y TAMAÑO DE FUENTE -->
@@ -1797,6 +1891,7 @@ const WireframeStudio = {
         this.autoSave();
       };
     }
+
 
     // Hook up link select
     const linkSelect = document.getElementById('inspLinkSelect');
@@ -2034,13 +2129,19 @@ const WireframeStudio = {
     const onMouseMove = (e) => {
       if (!isDragging) return;
       const dx = (e.clientX - startX) * 2;
-      const newWidth = Math.max(340, Math.min(1400, startWidth + dx));
+      const newWidth = Math.max(340, Math.min(1600, startWidth + dx));
       this.state.deviceWidth = newWidth;
       this.applyCanvasWidth(newWidth);
     };
 
     const onMouseUp = () => {
+      if (!isDragging) return;
       isDragging = false;
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      if (this.dom.canvasWrapper) {
+        this.dom.canvasWrapper.classList.remove('is-resizing');
+      }
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
     };
@@ -2048,10 +2149,16 @@ const WireframeStudio = {
     handle.onmousedown = (e) => {
       isDragging = true;
       startX = e.clientX;
-      startWidth = this.dom.canvasWrapper.offsetWidth;
+      startWidth = this.dom.canvasWrapper ? this.dom.canvasWrapper.offsetWidth : 1200;
+      document.body.style.cursor = 'ew-resize';
+      document.body.style.userSelect = 'none';
+      if (this.dom.canvasWrapper) {
+        this.dom.canvasWrapper.classList.add('is-resizing');
+      }
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
       e.preventDefault();
+      e.stopPropagation();
     };
   },
 

@@ -242,64 +242,95 @@
   max-width: 100%;
   margin: 0 auto;
   min-height: 200px;
+  box-sizing: border-box;
 }
 
 .wf-row-split {
   display: flex;
-  gap: 20px;
+  flex-wrap: wrap;
+  gap: 16px;
   margin-bottom: 20px;
   align-items: stretch;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .wf-col-main {
-  flex: 7;
+  flex: 7 1 300px;
   min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .wf-col-side {
-  flex: 3;
+  flex: 3 1 240px;
   min-width: 0;
+  max-width: 100%;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
+}
+
+.wf-row-50-50 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .wf-grid-4 {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
   gap: 16px;
   min-height: 60px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .wf-grid-3 {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
   gap: 16px;
   min-height: 60px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .wf-grid-2 {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
   gap: 16px;
   min-height: 60px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .wf-flex-row {
   display: flex;
-  gap: 14px;
+  flex-wrap: wrap;
+  gap: 12px;
   align-items: center;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .wf-flex-between {
   display: flex;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .wf-flex-wrap {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 /* ==========================================================================
@@ -510,6 +541,8 @@
   gap: 16px;
   position: relative;
   padding-left: 28px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .wf-tracking-stepper::before {
@@ -540,6 +573,62 @@
 .wf-step-node.completed {
   background-color: var(--wf-border-color);
 }
+
+/* Horizontal Responsive Stepper */
+.wf-stepper-horiz {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 100%;
+  gap: 8px;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+}
+
+.wf-step-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 0.85rem;
+}
+
+.wf-step-circle {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid var(--wf-border-color);
+  background: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.wf-step-item.completed .wf-step-circle {
+  background: var(--wf-border-color);
+  color: #ffffff;
+}
+
+.wf-step-item.active .wf-step-circle {
+  background: var(--wf-bg-muted);
+  border-width: 2.5px;
+}
+
+.wf-step-line {
+  flex: 1;
+  min-width: 20px;
+  height: 2px;
+  background: var(--wf-border-color);
+}
+
+.wf-step-line.completed {
+  background: var(--wf-border-color);
+}
+
 
 /* 3. TCG Cards */
 .wf-tcg-card {
@@ -920,3 +1009,110 @@
 .wf-editable-text:focus {
   background-color: #dbeafe;
 }
+
+/* ==========================================================================
+   SCRATCH-STYLE VISUAL PROGRAMMING BLOCKS (WIREFRAME / GRAYSCALE)
+   ========================================================================== */
+.wf-scratch-workspace {
+  background-color: #f9fafb;
+  border: var(--wf-border-width) dashed var(--wf-border-color);
+  padding: 20px;
+  min-height: 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.wf-scratch-stack {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+  filter: drop-shadow(0 2px 2px rgba(0, 0, 0, 0.12));
+}
+
+.wf-scratch-block {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 14px;
+  color: #111111;
+  font-weight: 700;
+  font-size: 0.85rem;
+  background-color: #ffffff;
+  border: 2px solid #111111;
+  border-radius: 4px;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.15);
+  box-sizing: border-box;
+  width: fit-content;
+  user-select: none;
+}
+
+.wf-scratch-block.block-stack {
+  margin-top: -2px;
+}
+
+/* Puzzle tab underneath */
+.wf-scratch-block.block-stack::after,
+.wf-scratch-block.block-hat::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 16px;
+  width: 18px;
+  height: 6px;
+  background: inherit;
+  border-left: 2px solid #111111;
+  border-right: 2px solid #111111;
+  border-bottom: 2px solid #111111;
+  border-radius: 0 0 4px 4px;
+  z-index: 3;
+}
+
+/* Hat Block top arch */
+.wf-scratch-block.block-hat {
+  border-top-left-radius: 18px 12px;
+  border-top-right-radius: 10px;
+  padding-top: 10px;
+  margin-bottom: 2px;
+}
+
+.wf-scratch-block.block-hat::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 12px;
+  width: 48px;
+  height: 8px;
+  background: inherit;
+  border-top: 2px solid #111111;
+  border-left: 2px solid #111111;
+  border-right: 2px solid #111111;
+  border-radius: 10px 10px 0 0;
+  z-index: 1;
+}
+
+/* Wireframe Gray Categories for Scratch Blocks */
+.wf-scratch-block.block-event { background-color: #f3f4f6; }
+.wf-scratch-block.block-control { background-color: #e5e7eb; }
+.wf-scratch-block.block-target { background-color: #e2e8f0; }
+.wf-scratch-block.block-effect { background-color: #d1d5db; }
+.wf-scratch-block.block-operator { background-color: #e5e7eb; }
+
+/* Capsule Inputs / Pills */
+.wf-scratch-pill {
+  background: #ffffff;
+  color: #111111;
+  border: 1.5px solid #111111;
+  border-radius: 12px;
+  padding: 3px 8px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+  display: inline-flex;
+  align-items: center;
+}
+

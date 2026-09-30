@@ -370,23 +370,47 @@ body {
 .canvas-resize-handle {
   position: absolute;
   top: 50%;
-  right: -12px;
+  right: -14px;
   transform: translateY(-50%);
-  width: 10px;
-  height: 44px;
+  width: 14px;
+  height: 56px;
   background-color: #111827;
-  border-radius: 3px;
+  border: 1.5px solid #ffffff;
+  border-radius: 4px;
   cursor: ew-resize;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 500;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  user-select: none;
+  touch-action: none;
+  transition: transform 0.1s ease, background-color 0.1s ease;
+}
+
+.canvas-resize-handle:hover {
+  background-color: #2563eb;
+  transform: translateY(-50%) scale(1.08);
+}
+
+.canvas-resize-handle:active {
+  background-color: #1d4ed8;
+  cursor: grabbing;
 }
 
 .canvas-resize-handle::after {
   content: "⋮";
   color: #ffffff;
-  font-size: 10px;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1;
 }
+
+.canvas-device-wrapper.is-resizing {
+  transition: none !important;
+  user-select: none;
+}
+
 
 /* Multi-Platform 3-in-1 View */
 .multi-platform-container {
@@ -535,26 +559,11 @@ body {
   background-color: #1d4ed8;
 }
 
-/* Link Badge on Elements in Canvas */
+/* Inter-Page Links (Subtle indicator only in editor when selected or hovered, no intrusive text badge) */
 [data-link-page] {
   position: relative;
 }
 
-[data-link-page]::after {
-  content: "→ " attr(data-link-name);
-  position: absolute;
-  top: -16px;
-  right: 2px;
-  background: #2563eb;
-  color: #ffffff;
-  font-size: 0.62rem;
-  font-weight: 800;
-  padding: 1px 5px;
-  border-radius: 2px;
-  pointer-events: none;
-  z-index: 200;
-  white-space: nowrap;
-}
 
 /* Pages Tab in Sidebar */
 .page-item-row {
